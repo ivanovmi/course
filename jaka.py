@@ -2,13 +2,20 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 G=nx.Graph()
-G.add_node(1)
-G.add_node(2)
-G.add_node(3)
-G.add_node(4)
-G.add_node(5)
-G.add_node(6)
-G.add_edge(1,2)
+
+nodes=raw_input("Enter the count of nodes: ")
+edges=raw_input("Enter the count of edges: ")
+
+for i in xrange(1,nodes+1):
+    G.add_node(i)
+
+for i in xrange(edges):
+    edge=raw_input("Enter first and second (space): ")
+    a=edge.split(" ")
+    G.add_edge(a[0],a[1])
+
+
+
 
 nx.draw(G)
 #nx.draw_random(G)
