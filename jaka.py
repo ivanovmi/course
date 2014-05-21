@@ -16,7 +16,6 @@ for i in xrange(edges):
 
 
 
-
 nx.draw(G)
 #nx.draw_random(G)
 #nx.draw_circular(G)
