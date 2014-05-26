@@ -3,29 +3,22 @@ __author__ = 'michael & evgeny'
 import matplotlib.pylab as pylab
 import matplotlib.pyplot as plt
 import numpy as np
-import threading
-import numpy
 import matplotlib
 
 graph = {}
+deleted=[]
+
 
 matplotlib.rcParams["toolbar"]="None"
 cf = pylab.gcf()
 cf.set_facecolor('w')
-ax = None
-nodelist = None
-
-if ax is None:
-        ax = pylab.gca()
-
-if nodelist is None:
-    nodelist = graph.keys()
+ax = pylab.gca()
 
 
 def create_random():
     nodes = int(np.random.randint(2, 10))
     edges = int(np.random.randint(1, nodes))
-    print nodes, edges
+
 
     for i in xrange(1, nodes+1):
         graph[i] = []
@@ -89,6 +82,7 @@ def draw(graph):
                     pos.append((i, graph[i][j]))
 
     for i in xrange(len(pos)):
+        if [pos[i][0],pos[i][1]] not in deleted:
             plt.plot([xy[pos[i][0]-1][0], xy[pos[i][1]-1][0]], [xy[pos[i][0]-1][1], xy[pos[i][1]-1][1]], 'k-', zorder=1)
 
     for i in graph:
@@ -117,6 +111,7 @@ def find_shortest_path(graph, start, end, path=[]):
         return shortest
 
 
+
 choice = int(raw_input("How you would like to create graph?\
                   1 - manually\
                   2-random\
@@ -128,6 +123,8 @@ elif choice == 2:
 elif choice == 3:
     create_from_file()
 
+
+flag=0
 while(1):
 
     choice = raw_input("Would you like to continue(Y/N)? ")
@@ -135,7 +132,24 @@ while(1):
 
     if choice in ["Y", "y", "YES", "yes", "Yes"]:
         plt.cla()
+        plt.clf()
+        plt.close()
+        flag=1
         break
     elif choice in ["N", "n", "no", "NO", "No"]:
+        plt.cla()
+        plt.clf()
         plt.close()
         break
+
+if flag:
+    count=int(raw_input("How much edges you would like to remove?: "))
+    for i in xrange(count):
+        rem=raw_input("Enter the edges to remove (space): ")
+        a=rem.split(" ")
+        deleted.append([int(a[0]),int(a[1])])
+    matplotlib.rcParams["toolbar"]="None"
+    cf = pylab.gcf()
+    cf.set_facecolor('w')
+    ax = pylab.gca()
+    draw(graph)
