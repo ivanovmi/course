@@ -2,84 +2,105 @@ __author__ = 'michael & evgeny'
 
 import matplotlib.pylab as pylab
 import matplotlib.pyplot as plt
-import matplotlib.cbook as cb
-from matplotlib.collections import LineCollection
 import numpy as np
-import random
-import networkx as nx
+import threading
+import numpy
+import matplotlib
 
+graph = {}
 
-
-nodes=int(raw_input("Enter the count of nodes: "))
-edges=int(raw_input("Enter the count of edges: "))
-
-graph={}
-
-for i in xrange(1,nodes+1):
-        graph[i]=[]
-
-for i in xrange(edges):
-        edge=raw_input("Enter first and second (space): ")
-        a=edge.split(" ")
-        graph[int(a[0])].append(int(a[1]))
-
-print graph.items()
-
-'''
-graph = {1: [2, 3],
-         2: [3, 4],
-         3: [4],
-         4: [3],
-         5: [6],
-         6: [3]}
-'''
-cf=pylab.gcf()
+matplotlib.rcParams["toolbar"]="None"
+cf = pylab.gcf()
 cf.set_facecolor('w')
-ax=None
-nodelist=None
+ax = None
+nodelist = None
 
-x=random.randint(0,1)
-y=random.randint(0,1)
 if ax is None:
-        ax=pylab.gca()
+        ax = pylab.gca()
 
-nodelist=graph.keys()
-
-xy=[]
-for i in xrange(len(graph)):
-	x=np.random.random()
-	y=np.random.random()
-	xy.append([x,y])
-	node_collection=ax.scatter(x,y,s=300,c='r',marker='o', zorder=2)
+if nodelist is None:
+    nodelist = graph.keys()
 
 
-edge_pos=[]
-pos=[]
+def create_random():
+    nodes = int(np.random.randint(2, 10))
+    edges = int(np.random.randint(1, nodes))
+    print nodes, edges
 
-for i in graph:
-        for j in xrange(len(graph[i])):
-                pos.append((i, graph[i][j]))
+    for i in xrange(1, nodes+1):
+        graph[i] = []
 
-for i in xrange(len(pos)):
-        plt.plot([xy[pos[i][0]-1][0],xy[pos[i][1]-1][0]],[xy[pos[i][0]-1][1],xy[pos[i][1]-1][1]],'k-',zorder=1)
+    if edges == 1:
+        edges += 1
+    for i in xrange(edges):
+        graph[int(np.random.randint(1, edges))].append(int(np.random.randint(0, edges)))
 
-for i in graph:
-        t=ax.text(xy[i-1][0]-0.007,xy[i-1][1]-0.01, i, zorder=3)
-'''
-def find_path(graph, start, end, path=[]):
-        path = path + [start]
-        if start == end:
-            return path
-        if not graph.has_key(start):
-            return None
-        for node in graph[start]:
-            if node not in path:
-                newpath = find_path(graph, node, end, path)
-                if newpath: return newpath
-        return None
+    draw(graph)
 
-#print find_path(graph,'A','C')
-'''
+
+def create_from_file():
+    f = open("graph.txt", 'r')
+    nodes = int(f.readline())
+    edges = int(f.readline())
+
+    for i in xrange(1, nodes+1):
+        graph[i] = []
+
+    for i in xrange(1, int(edges/2)-1):
+        arr = (f.read())
+        edge = arr.split("\n")
+        for i in xrange(len(edge)):
+            a = edge[i].split(" ")
+            graph[int(a[0])].append(int(a[1]))
+
+    draw(graph)
+
+
+def create_graph():
+    nodes = int(raw_input("Enter the count of nodes: "))
+    edges = int(raw_input("Enter the count of edges: "))
+
+    for i in xrange(1, nodes+1):
+        graph[i] = []
+
+    for i in xrange(edges):
+        edge = raw_input("Enter first and second (space): ")
+        a = edge.split(" ")
+        if int(a[1]) == 0:
+            graph[int(a[0])].append(int(a[0]))
+        else:
+            graph[int(a[0])].append(int(a[1]))
+
+    draw(graph)
+
+
+def draw(graph):
+    xy = []
+    for i in xrange(len(graph)):
+        x = np.random.random()
+        y = np.random.random()
+        xy.append([x, y])
+        node_collection = ax.scatter(x, y, s=300, c='r', marker='s', zorder=2)
+
+    pos = []
+
+    for i in graph:
+            for j in xrange(len(graph[i])):
+                    pos.append((i, graph[i][j]))
+
+    for i in xrange(len(pos)):
+            plt.plot([xy[pos[i][0]-1][0], xy[pos[i][1]-1][0]], [xy[pos[i][0]-1][1], xy[pos[i][1]-1][1]], 'k-', zorder=1)
+
+    for i in graph:
+            t = ax.text(xy[i-1][0]-0.007, xy[i-1][1]-0.01, i, zorder=3)
+
+    plt.axis("off")
+    #cf.set_history_buttons()
+    cf.canvas.set_window_title("Graph vizualization")
+    plt.ion()
+    plt.show()
+
+
 def find_shortest_path(graph, start, end, path=[]):
         path = path + [start]
         if start == end:
@@ -95,7 +116,26 @@ def find_shortest_path(graph, start, end, path=[]):
                         shortest = newpath
         return shortest
 
-#print find_shortest_path(graph,1,4)
+
+choice = int(raw_input("How you would like to create graph?\
+                  1 - manually\
+                  2-random\
+                  3-from file: "))
+if choice == 1:
+    create_graph()
+elif choice == 2:
+    create_random()
+elif choice == 3:
+    create_from_file()
+
+while(1):
+
+    choice = raw_input("Would you like to continue(Y/N)? ")
 
 
-plt.show()
+    if choice in ["Y", "y", "YES", "yes", "Yes"]:
+        plt.cla()
+        break
+    elif choice in ["N", "n", "no", "NO", "No"]:
+        plt.close()
+        break
