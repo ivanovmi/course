@@ -11,8 +11,11 @@ deleted=[]
 
 matplotlib.rcParams["toolbar"]="None"
 cf = pylab.gcf()
+#cf1 = pylab.gcf()
 cf.set_facecolor('w')
+#cf1.set_facecolor('w')
 ax = pylab.gca()
+#bx = pylab.gca()
 
 
 def create_random():
@@ -26,7 +29,7 @@ def create_random():
     if edges == 1:
         edges += 1
     for i in xrange(edges):
-        graph[int(np.random.randint(1, edges))].append(int(np.random.randint(0, edges)))
+        graph[int(np.random.randint(1, edges+1))].append(int(np.random.randint(1, edges+1)))
 
     draw(graph)
 
@@ -45,6 +48,12 @@ def create_from_file():
         for i in xrange(len(edge)):
             a = edge[i].split(" ")
             graph[int(a[0])].append(int(a[1]))
+            print a
+    print graph
+
+
+
+
 
     draw(graph)
 
@@ -68,6 +77,7 @@ def create_graph():
 
 
 def draw(graph):
+    print graph
     xy = []
     for i in xrange(len(graph)):
         x = np.random.random()
@@ -86,13 +96,19 @@ def draw(graph):
             plt.plot([xy[pos[i][0]-1][0], xy[pos[i][1]-1][0]], [xy[pos[i][0]-1][1], xy[pos[i][1]-1][1]], 'k-', zorder=1)
 
     for i in graph:
-            t = ax.text(xy[i-1][0]-0.007, xy[i-1][1]-0.01, i, zorder=3)
+        t = ax.text(xy[i-1][0]-0.007, xy[i-1][1]-0.01, i, zorder=3)
 
     plt.axis("off")
     #cf.set_history_buttons()
     cf.canvas.set_window_title("Graph vizualization")
+    #cf1.canvas.set_window_title("Graph vizualization")
     plt.ion()
-    plt.show()
+    plt.draw()
+    if not deleted:
+        plt.show()
+    else:
+        while (1):
+            pos.append(1)
 
 
 def find_shortest_path(graph, start, end, path=[]):
@@ -111,6 +127,18 @@ def find_shortest_path(graph, start, end, path=[]):
         return shortest
 
 
+def delete_edges(graph):
+
+    for i in deleted:
+            if i[0] in graph:
+                if i[1] in graph[i[0]]:
+                    graph[i[0]].remove(i[1])
+                else:
+                    print "Error with finish point"
+            else:
+                print "Error with start point"
+
+                
 
 choice = int(raw_input("How you would like to create graph?\
                   1 - manually\
@@ -131,15 +159,9 @@ while(1):
 
 
     if choice in ["Y", "y", "YES", "yes", "Yes"]:
-        plt.cla()
-        plt.clf()
-        plt.close()
         flag=1
         break
     elif choice in ["N", "n", "no", "NO", "No"]:
-        plt.cla()
-        plt.clf()
-        plt.close()
         break
 
 if flag:
@@ -148,8 +170,7 @@ if flag:
         rem=raw_input("Enter the edges to remove (space): ")
         a=rem.split(" ")
         deleted.append([int(a[0]),int(a[1])])
-    matplotlib.rcParams["toolbar"]="None"
-    cf = pylab.gcf()
-    cf.set_facecolor('w')
-    ax = pylab.gca()
+    delete_edges(graph)
+    plt.cla()
+    #plt.clf()
     draw(graph)
