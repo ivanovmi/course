@@ -11,11 +11,8 @@ deleted=[]
 
 matplotlib.rcParams["toolbar"]="None"
 cf = pylab.gcf()
-#cf1 = pylab.gcf()
 cf.set_facecolor('w')
-#cf1.set_facecolor('w')
 ax = pylab.gca()
-#bx = pylab.gca()
 
 
 def create_random():
