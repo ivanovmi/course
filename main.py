@@ -44,9 +44,11 @@ def create_from_file():
     for i in xrange(1, nodes+1):
         graph[i] = []
 
-    for i in xrange(1, int(edges/2)-1):
-        arr = (f.read())
+    for i in xrange(1, edges+1):
+        arr = f.readline()
         edge = arr.split("\n")
+        if '' in edge:
+            edge.remove('')
         for i in xrange(len(edge)):
             a = edge[i].split(" ")
             graph[int(a[0])].append(int(a[1]))
