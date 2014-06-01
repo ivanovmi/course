@@ -6,10 +6,10 @@ import numpy as np
 import matplotlib
 
 graph = {}
-deleted=[]
+deleted = []
 
 
-matplotlib.rcParams["toolbar"]="None"
+matplotlib.rcParams["toolbar"] = "None"
 cf = pylab.gcf()
 cf.set_facecolor('w')
 ax = pylab.gca()
@@ -19,14 +19,19 @@ def create_random():
     nodes = int(np.random.randint(2, 10))
     edges = int(np.random.randint(1, nodes))
 
-
     for i in xrange(1, nodes+1):
         graph[i] = []
 
     if edges == 1:
         edges += 1
+
     for i in xrange(edges):
         graph[int(np.random.randint(1, edges+1))].append(int(np.random.randint(1, edges+1)))
+
+    for i in xrange(1, edges+1):
+        if i in graph[i]:
+            graph[i].remove(i)
+        graph[i] = dict(zip(graph[i], graph[i])).values()
 
     draw(graph)
 
@@ -47,10 +52,6 @@ def create_from_file():
             graph[int(a[0])].append(int(a[1]))
             print a
     print graph
-
-
-
-
 
     draw(graph)
 
@@ -89,23 +90,25 @@ def draw(graph):
                     pos.append((i, graph[i][j]))
 
     for i in xrange(len(pos)):
-        if [pos[i][0],pos[i][1]] not in deleted:
+        if [pos[i][0], pos[i][1]] not in deleted:
             plt.plot([xy[pos[i][0]-1][0], xy[pos[i][1]-1][0]], [xy[pos[i][0]-1][1], xy[pos[i][1]-1][1]], 'k-', zorder=1)
 
     for i in graph:
         t = ax.text(xy[i-1][0]-0.007, xy[i-1][1]-0.01, i, zorder=3)
 
     plt.axis("off")
-    #cf.set_history_buttons()
     cf.canvas.set_window_title("Graph vizualization")
-    #cf1.canvas.set_window_title("Graph vizualization")
     plt.ion()
     plt.draw()
     if not deleted:
         plt.show()
     else:
-        while (1):
-            pos.append(1)
+        while 1:
+            plt.hold()
+            choose = raw_input("You want to quit?: ")
+            if choose in ["Y", "y", "YES", "yes", "Yes"]:
+                plt.close()
+                break
 
 
 def find_shortest_path(graph, start, end, path=[]):
@@ -135,12 +138,8 @@ def delete_edges(graph):
             else:
                 print "Error with start point"
 
-                
 
-choice = int(raw_input("How you would like to create graph?\
-                  1 - manually\
-                  2-random\
-                  3-from file: "))
+choice = int(raw_input("How you would like to create graph?\n1 - manually\n2-random\n3-from file: "))
 if choice == 1:
     create_graph()
 elif choice == 2:
@@ -149,25 +148,24 @@ elif choice == 3:
     create_from_file()
 
 
-flag=0
-while(1):
+flag = 0
+while 1:
 
     choice = raw_input("Would you like to continue(Y/N)? ")
 
-
     if choice in ["Y", "y", "YES", "yes", "Yes"]:
-        flag=1
+        flag = 1
         break
     elif choice in ["N", "n", "no", "NO", "No"]:
+        plt.close()
         break
 
 if flag:
-    count=int(raw_input("How much edges you would like to remove?: "))
+    count = int(raw_input("How much edges you would like to remove?: "))
     for i in xrange(count):
-        rem=raw_input("Enter the edges to remove (space): ")
-        a=rem.split(" ")
-        deleted.append([int(a[0]),int(a[1])])
+        rem = raw_input("Enter the edges to remove (space): ")
+        a = rem.split(" ")
+        deleted.append([int(a[0]), int(a[1])])
     delete_edges(graph)
     plt.cla()
-    #plt.clf()
     draw(graph)
