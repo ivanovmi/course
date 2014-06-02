@@ -18,6 +18,7 @@ ax = pylab.gca()
 def create_random():
     nodes = int(np.random.randint(2, 10))
     edges = int(np.random.randint(1, nodes))
+    print edges
 
     for i in xrange(1, nodes+1):
         graph[i] = []
@@ -29,9 +30,9 @@ def create_random():
         graph[int(np.random.randint(1, edges+1))].append(int(np.random.randint(1, edges+1)))
 
     for i in xrange(1, edges+1):
+        graph[i] = dict(zip(graph[i], graph[i])).values()
         if i in graph[i]:
             graph[i].remove(i)
-        graph[i] = dict(zip(graph[i], graph[i])).values()
 
     draw(graph)
 
@@ -59,8 +60,14 @@ def create_from_file():
 
 
 def create_graph():
-    nodes = int(raw_input("Enter the count of nodes: "))
-    edges = int(raw_input("Enter the count of edges: "))
+    while (1):
+        nodes = int(raw_input("Enter the count of nodes: "))
+        if nodes>0:
+            break
+    while(1):
+        edges = int(raw_input("Enter the count of edges: "))
+        if edges>0 and edges<=nodes*(nodes-1)/2:
+            break
 
     for i in xrange(1, nodes+1):
         graph[i] = []
@@ -140,14 +147,17 @@ def delete_edges(graph):
             else:
                 print "Error with start point"
 
-
-choice = int(raw_input("How you would like to create graph?\n1 - manually\n2-random\n3-from file: "))
-if choice == 1:
-    create_graph()
-elif choice == 2:
-    create_random()
-elif choice == 3:
-    create_from_file()
+while (1):
+    choice = int(raw_input("How you would like to create graph?\n1 - manually\n2-random\n3-from file: "))
+    if choice == 1:
+        create_graph()
+        break
+    elif choice == 2:
+        create_random()
+        break
+    elif choice == 3:
+        create_from_file()
+        break
 
 
 flag = 0
