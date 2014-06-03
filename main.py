@@ -18,7 +18,6 @@ ax = pylab.gca()
 def create_random():
     nodes = int(np.random.randint(2, 10))
     edges = int(np.random.randint(1, nodes))
-    print edges
 
     for i in xrange(1, nodes+1):
         graph[i] = []
@@ -56,17 +55,18 @@ def create_from_file():
             print a
     print graph
 
+
     draw(graph)
 
 
 def create_graph():
-    while (1):
+    while 1:
         nodes = int(raw_input("Enter the count of nodes: "))
         if nodes>0:
             break
-    while(1):
+    while 1:
         edges = int(raw_input("Enter the count of edges: "))
-        if edges>0 and edges<=nodes*(nodes-1)/2:
+        if edges > 0 and edges <= nodes*(nodes-1)/2:
             break
 
     for i in xrange(1, nodes+1):
@@ -80,6 +80,7 @@ def create_graph():
         else:
             graph[int(a[0])].append(int(a[1]))
 
+    print iterative_dfs(graph, 1)
     draw(graph)
 
 
@@ -136,6 +137,26 @@ def find_shortest_path(graph, start, end, path=[]):
         return shortest
 
 
+def recursive_dfs(graph, start, path=[]):
+  '''recursive depth first search from start'''
+  path=path+[start]
+  for node in graph[start]:
+    if not node in path:
+      path=recursive_dfs(graph, node, path)
+  return path
+
+
+def iterative_dfs(graph, start, path=[]):
+  '''iterative depth first search from start'''
+  q=[start]
+  while q:
+    v=q.pop(0)
+    if v not in path:
+      path=path+[v]
+      q=graph[v]+q
+  return path
+
+
 def delete_edges(graph):
 
     for i in deleted:
@@ -147,7 +168,7 @@ def delete_edges(graph):
             else:
                 print "Error with start point"
 
-while (1):
+while 1:
     choice = int(raw_input("How you would like to create graph?\n1 - manually\n2-random\n3-from file: "))
     if choice == 1:
         create_graph()
