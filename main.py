@@ -76,13 +76,18 @@ def create_graph():
     for i in xrange(1, nodes+1):
         graph[i] = []
 
-    for i in xrange(edges):
-        edge = raw_input("Enter first and second (space): ")
-        a = edge.split(" ")
-        if int(a[1]) == 0:
-            graph[int(a[0])].append(int(a[0]))
-        else:
-            graph[int(a[0])].append(int(a[1]))
+    while 1:
+        try:
+            for i in xrange(edges):
+                edge = raw_input("Enter first and second (space): ")
+                a = edge.split(" ")
+                if int(a[1]) == 0:
+                    graph[int(a[0])].append(int(a[0]))
+                else:
+                    graph[int(a[0])].append(int(a[1]))
+            break
+        except IndexError:
+            print "You must try again!"
 
     draw(graph)
 
