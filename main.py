@@ -65,9 +65,13 @@ def create_graph():
         if nodes>0:
             break
     while 1:
-        edges = int(raw_input("Enter the count of edges: "))
-        if edges > 0 and edges <= nodes*(nodes-1)/2:
+        if nodes == 1:
+            edges = 0
             break
+        else:
+            edges = int(raw_input("Enter the count of edges: "))
+            if (edges > 0) and (edges <= nodes*(nodes-1)/2):
+                break
 
     for i in xrange(1, nodes+1):
         graph[i] = []
@@ -126,40 +130,12 @@ def draw(graph):
                 break
 
 
-def find_shortest_path(graph, start, end, path=[]):
-        path = path + [start]
-        if start == end:
-            return path
-        if not graph.has_key(start):
-            return None
-        shortest = None
-        for node in graph[start]:
-            if node not in path:
-                newpath = find_shortest_path(graph, node, end, path)
-                if newpath:
-                    if not shortest or len(newpath) < len(shortest):
-                        shortest = newpath
-        return shortest
-
-
 def recursive_dfs(graph, start, path=[]):
-  '''recursive depth first search from start'''
-  path=path+[start]
-  for node in graph[start]:
-    if not node in path:
-      path=recursive_dfs(graph, node, path)
-  return path
-
-
-def iterative_dfs(graph, start, path=[]):
-  '''iterative depth first search from start'''
-  q=[start]
-  while q:
-    v=q.pop(0)
-    if v not in path:
-      path=path+[v]
-      q=graph[v]+q
-  return path
+    path = path+[start]
+    for node in graph[start]:
+        if not node in path:
+            path = recursive_dfs(graph, node, path)
+    return path
 
 
 def delete_edges(graph):
@@ -173,22 +149,26 @@ def delete_edges(graph):
             else:
                 print "Error with start point"
 
+
 while 1:
-    choice = int(raw_input("How you would like to create graph?\n1 - manually\n2-random\n3-from file: "))
-    if choice == 1:
-        create_graph()
-        break
-    elif choice == 2:
-        create_random()
-        break
-    elif choice == 3:
-        create_from_file()
-        break
+    try:
+        choice = int(raw_input("How you would like to create graph?\n1 - manually\n2-random\n3-from file: "))
+        if choice == 1:
+            create_graph()
+            break
+        elif choice == 2:
+            create_random()
+            break
+        elif choice == 3:
+            create_from_file()
+            break
+    except ValueError:
+        print "Enter the number, not char!"
 
 
 flag = 0
-while 1:
 
+while 1:
     choice = raw_input("Would you like to continue(Y/N)? ")
 
     if choice in ["Y", "y", "YES", "yes", "Yes"]:
@@ -197,13 +177,17 @@ while 1:
     elif choice in ["N", "n", "no", "NO", "No"]:
         plt.close()
         break
-
 if flag:
-    count = int(raw_input("How much edges you would like to remove?: "))
-    for i in xrange(count):
-        rem = raw_input("Enter the edges to remove (space): ")
-        a = rem.split(" ")
-        deleted.append([int(a[0]), int(a[1])])
-    delete_edges(graph)
-    plt.cla()
-    draw(graph)
+    while 1:
+        try:
+            count = int(raw_input("How much edges you would like to remove?: "))
+            for i in xrange(count):
+                rem = raw_input("Enter the edges to remove (space): ")
+                a = rem.split(" ")
+                deleted.append([int(a[0]), int(a[1])])
+            delete_edges(graph)
+            plt.cla()
+            draw(graph)
+            break
+        except ValueError:
+            print "Enter the number, not char!"
