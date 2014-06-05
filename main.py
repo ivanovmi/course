@@ -196,3 +196,5 @@ if flag:
             break
         except ValueError:
             print "Enter the number, not char!"
+        except IndexError:
+            print "Error! Fix the count of edges!"
