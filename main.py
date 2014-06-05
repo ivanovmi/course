@@ -115,9 +115,9 @@ def draw(graph):
         t = ax.text(xy[i-1][0]-0.007, xy[i-1][1]-0.01, i, zorder=3)
 
     if len(recursive_dfs(graph, 1)) <= len(graph) - 1:
-        print "More than 1 connected components!"
+        print "Path not exist! More than 1 connected components!"
     else:
-        print "OK."
+        print "Path exist"
 
 
     plt.axis("off")
